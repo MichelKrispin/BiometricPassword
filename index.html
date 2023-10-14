@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biometric Password</title>
+    <meta name="description" content="Biometric password detection" />
+    <meta name="author" content="Michel Krispin" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  </head>
+  <body>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-body">
+          <p class="title">Biometric Password Detection</p>
+          <p>
+            Everybody types in their passwords differently, leaving different
+            amounts of time between their keystrokes. This makes it possible to
+            detect who typed in a password, just by measuring the time between
+            each keystroke and using some
+            <a
+              href="https://www.tensorflow.org/js"
+              target="_blank"
+              rel="noreferrer"
+              >deep learning magic</a
+            >. Keeping it simple, here the password is <i>password</i> and one
+            should type it in a couple of times, then let someone else type it
+            in and see if the neural network's educated guess is correct.
+          </p>
+          <p>
+            Note, that everything is saved in your browser so that all data is
+            lost when this page is refreshed or closed.
+          </p>
+        </div>
+      </section>
+
+      <div class="tabs is-centered is-boxed">
+        <ul>
+          <li id="select-train" class="is-active">
+            <a>
+              <span>Train</span>
+            </a>
+          </li>
+          <li id="select-detect">
+            <a>
+              <span>Detect</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Train Container -->
+      <div id="train-container">
+        <div class="message">
+          <p class="message-header">Train</p>
+          <div class="message-body">
+            <div class="content">
+              <p>
+                There should be at least two different persons typing in
+                <i>password</i> a couple of times. It doesn't matter if one
+                types it in more often than the other. Just type it and hit
+                Enter (or click the button on the right). When everyone reached
+                the minimum number, the <i>Train</i> button will be enabled and
+                the network learns. Depending on the machine, this might take a
+                few seconds. Afterwards, head over to the <i>Detect</i> tab, let
+                someone type in the password and hit Enter.
+              </p>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Enter your name</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control is-expanded">
+                    <input
+                      class="input"
+                      type="text"
+                      placeholder="Enter your name to save your password"
+                      id="train-name-input"
+                    />
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Enter the password</label>
+              </div>
+              <div class="field-body">
+                <div class="field is-grouped">
+                  <p class="control is-expanded">
+                    <input
+                      class="input"
+                      type="text"
+                      placeholder="The password is 'password'"
+                      id="train-password-input"
+                    />
+                  </p>
+
+                  <p class="control">
+                    <a class="button is-info" id="save-password-button">
+                      Save
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="notification is-link is-light is-hidden"
+              id="number-passwords-typed-info"
+            ></div>
+            <div class="field is-grouped is-grouped-centered">
+              <p class="control">
+                <button class="button is-dark" id="train-button" disabled>
+                  Train
+                </button>
+              </p>
+            </div>
+            <div
+              class="notification is-primary is-hidden"
+              id="training-finished-info"
+            >
+              <p>
+                <span class="icon is-small"><i class="fa fa-check"></i></span>
+                Training complete. Head over to the <i>Detect</i> tab.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detect Container -->
+      <div style="display: none" id="detect-container">
+        <div class="message">
+          <p class="message-header">Detect</p>
+          <div class="message-body">
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Enter the password</label>
+              </div>
+              <div class="field-body">
+                <div class="field is-grouped">
+                  <p class="control is-expanded">
+                    <input
+                      class="input"
+                      type="text"
+                      placeholder="The password is 'password'"
+                      id="detect-password-input"
+                      disabled
+                    />
+                  </p>
+                  <p class="control">
+                    <button class="button is-info" id="detect-button" disabled>
+                      Educated Guess
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <article id="output-article" class="message is-dark is-hidden">
+          <div class="message-body">
+            <div id="output-div"></div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <script src="./index.js"></script>
+  </body>
+</html>
